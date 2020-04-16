@@ -1,0 +1,220 @@
+<html>
+  <head>
+    <title>Neurochart Maker</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        text-align: center;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      h1 {
+        margin: 50px 50px 150px 50px;
+      }
+
+      main {
+      }
+
+      .neurochart {
+        text-align: left;
+        height: 860px;
+        width: 860px;
+        background-size: cover;
+        margin-left: 170px;
+        padding-top: 168px;
+      }
+
+      .neurochart-wrapper {
+        background-image: url("./Standard-Neurotyping-Chart-v.1.2.png");
+        height: 1200px;
+        width: 1200px;
+        background-size: cover;
+        margin: -150px 0 0 0;
+        padding: 0;
+      }
+
+      #file-image-upload {
+        height: 50px;
+        margin-left: 70px;
+      }
+
+      #url-image-upload {
+        visibility: hidden;
+        height: 50px;
+        margin-top: -50px;
+      }
+
+      img {
+        position: relative;
+        height: 43px;
+        width: 43px;
+        margin-top: -21.5px;
+        margin-left: -21.5px;
+      }
+      .slider {
+        margin: 0 0 20px 0;
+      }
+
+      .slider p {
+        text-align: left;
+        display: inline-block;
+        width: 100px;
+      }
+
+      .margin-left-medium {
+        margin-left: 50px;
+      }
+
+      .image-upload-type {
+        margin: 20px;
+      }
+
+      #form {
+        margin-top: -100px;
+      }
+
+      .center {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Neurochart Maker</h1>
+      <div class="center">
+        <div id="neurochart-wrapper" class="neurochart-wrapper">
+          <div id="neurochart" class="neurochart"></div>
+        </div>
+      </div>
+      <form id="form">
+        <h2>Add To Chart</h2>
+
+        <div>
+          <div class="image-upload-type">
+            <label for="image-upload-type">Image Upload Type:</label>
+            <select name="image-upload-type" id="image-upload-type">
+              <option value="file">File Upload</option>
+              <option value="url">Image Link</option>
+            </select>
+          </div>
+
+          <div id="file-image-upload">
+            <input
+              type="file"
+              id="avatar-file"
+              name="avatar-file"
+              accept="image/png, image/jpeg"
+            />
+          </div>
+
+          <div id="url-image-upload">
+            <label for="avatar-url">Image Link:</label>
+            <input type="text" id="avatar-url" name="avatar-url" />
+          </div>
+        </div>
+
+        <div class="slider">
+          <p>Linear</p>
+          <input
+            type="range"
+            id="linear-lateral"
+            name="linear-lateral"
+            min="0"
+            max="16"
+          />
+          <p class="margin-left-medium">Lateral</p>
+        </div>
+
+        <div class="slider">
+          <p>Lexical</p>
+          <input
+            type="range"
+            id="lexical-impressionist"
+            name="lexical-impressionist"
+            min="0"
+            max="16"
+          />
+          <p class="margin-left-medium">Impressionistic</p>
+        </div>
+
+        <button type="submit">Add</button>
+        <a id="image-save" href="" download="neurotype.png">
+          <button id="save-button" type="button">Save Chart</button>
+        </a>
+      </form>
+    </main>
+  </body>
+
+  <script src="./dom-to-image.js"></script>
+  <script>
+    const fullChart = document.getElementById("neurochart-wrapper");
+    let numberOfImages = 0;
+    const form = document.getElementById("form");
+
+    const fileImageUpload = document.getElementById("file-image-upload");
+    const urlImageUpload = document.getElementById("url-image-upload");
+
+    const imageUploadType = document.getElementById("image-upload-type");
+
+    function updateImage() {
+      domtoimage
+        .toPng(document.getElementById("neurochart-wrapper"))
+        .then((dataUrl) => {
+          document.getElementById("image-save").href = dataUrl;
+        });
+    }
+
+    function imageSelectOnChange(event) {
+      if (event.target.value === "file") {
+        fileImageUpload.style.visibility = "visible";
+        urlImageUpload.style.visibility = "hidden";
+      } else {
+        fileImageUpload.style.visibility = "hidden";
+        urlImageUpload.style.visibility = "visible";
+      }
+    }
+
+    imageUploadType.addEventListener("change", imageSelectOnChange);
+
+    function submit(event) {
+      event.preventDefault();
+
+      const lateralLinear = event.target["linear-lateral"].value;
+      const lexicalImpressionist = event.target["lexical-impressionist"].value;
+
+      const neurochart = document.getElementById("neurochart");
+
+      const image = document.createElement("img");
+      image.style.top = `${100 - (100 / 16) * lateralLinear}%`;
+      image.style.left = `${
+        (100 / 16) * lexicalImpressionist - numberOfImages * 2.5
+      }%`;
+
+      if (event.target["image-upload-type"].value === "file") {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(event.target["avatar-file"].files[0]);
+
+        fileReader.onload = (event) => {
+          if (event.target.readyState === FileReader.DONE) {
+            image.src = event.target.result;
+            neurochart.appendChild(image);
+            numberOfImages++;
+          }
+
+          updateImage();
+        };
+      } else {
+        image.src = event.target["avatar-url"].value;
+        neurochart.appendChild(image);
+        numberOfImages++;
+
+        updateImage();
+      }
+    }
+
+    form.addEventListener("submit", submit);
+    updateImage();
+  </script>
+</html>
