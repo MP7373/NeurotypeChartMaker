@@ -1,0 +1,73 @@
+html,
+body {
+  margin: 0;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+}
+
+h1 {
+  margin: 50px 50px 150px 50px;
+}
+
+.neurochart {
+  text-align: left;
+  height: 860px;
+  width: 860px;
+  background-size: cover;
+  margin-left: 170px;
+  padding-top: 168px;
+}
+
+.neurochart-wrapper {
+  background-image: url("standard-neurotyping-chart-v.1.2.png");
+  height: 1200px;
+  width: 1200px;
+  background-size: cover;
+  margin: -150px 0 0 0;
+  padding: 0;
+}
+
+#file-image-upload {
+  height: 50px;
+  margin-left: 70px;
+}
+
+#url-image-upload {
+  visibility: hidden;
+  height: 50px;
+  margin-top: -50px;
+}
+
+img {
+  position: relative;
+  height: 43px;
+  width: 43px;
+  margin-top: -21.5px;
+  margin-left: -21.5px;
+}
+.slider {
+  margin: 0 0 20px 0;
+}
+
+.slider p {
+  text-align: left;
+  display: inline-block;
+  width: 100px;
+}
+
+.margin-left-medium {
+  margin-left: 50px;
+}
+
+.image-upload-type {
+  margin: 20px;
+}
+
+#form {
+  margin-top: -100px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
